@@ -1,5 +1,6 @@
 package com.salmafahira0038.miniproject3.network
 
+import android.media.Image
 import com.salmafahira0038.miniproject3.model.MakeUp
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -26,5 +27,9 @@ interface MakeupApiService {
 object MakeupApi{
     val service: MakeupApiService by lazy {
         retrofit.create(MakeupApiService::class.java)
+    }
+
+    fun getMakeUpUrl(imageId: String): String{
+        return  "$BASE_URL$imageId.jpg"
     }
 }

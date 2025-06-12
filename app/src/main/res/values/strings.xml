@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">MiniProject3</string>
+    <string name="app_name">Cosmetics</string>
+    <string name="gambar">Gambar %1$s</string>
 </resources>
