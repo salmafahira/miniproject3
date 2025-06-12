@@ -90,10 +90,12 @@ fun MainScreen() {
     val user by dataStore.userFlow.collectAsState(User())
 
     var showDialog by remember { mutableStateOf(false) }
+    var showMakeUpDialog by remember { mutableStateOf(false) }
 
     var bitmap: Bitmap? by remember { mutableStateOf(null) }
     var launcher = rememberLauncherForActivityResult(CropImageContract()) {
         bitmap = getCroppedImage(context.contentResolver, it)
+        if (bitmap != null) showMakeUpDialog = true
     }
     Scaffold(
         topBar = {
@@ -149,6 +151,15 @@ fun MainScreen() {
                 onDismissRequest = { showDialog = false }) {
                 CoroutineScope(Dispatchers.IO).launch { signOut(context, dataStore) }
                 showDialog = false
+            }
+        }
+
+        if (showMakeUpDialog) {
+            MakeupDialog(
+                bitmap = bitmap,
+                onDismissRequest = { showMakeUpDialog = false }) {judul, harga ->
+                Log.d("TAMBAH", "$judul $harga ditambahkan.")
+                showMakeUpDialog = false
             }
         }
     }
