@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,11 +25,11 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -74,7 +75,7 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.salmafahira0038.miniproject3.BuildConfig
 import com.salmafahira0038.miniproject3.R
-import com.salmafahira0038.miniproject3.model.MakeUp
+import com.salmafahira0038.miniproject3.model.Makeup
 import com.salmafahira0038.miniproject3.model.User
 import com.salmafahira0038.miniproject3.network.ApiStatus
 import com.salmafahira0038.miniproject3.network.MakeupApi
@@ -95,12 +96,16 @@ fun MainScreen() {
     val errorMessage by viewModel.errorMessage
 
     var showDialog by remember { mutableStateOf(false) }
-    var showMakeUpDialog by remember { mutableStateOf(false) }
+    var showMakeupDialog by remember { mutableStateOf(false) }
+
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
+    var selectedMakeup by remember { mutableStateOf<Makeup?>(null) }
 
     var bitmap: Bitmap? by remember { mutableStateOf(null) }
-    var launcher = rememberLauncherForActivityResult(CropImageContract()) {
+    val launcher = rememberLauncherForActivityResult(CropImageContract()) {
         bitmap = getCroppedImage(context.contentResolver, it)
-        if (bitmap != null) showMakeUpDialog = true
+        if (bitmap != null) showMakeupDialog = true
     }
     Scaffold(
         topBar = {
@@ -148,7 +153,10 @@ fun MainScreen() {
             }
         }
     ) { innerPadding ->
-        ScreenContent(viewModel, user.email, Modifier.padding(innerPadding))
+        ScreenContent(viewModel, user.email, Modifier.padding(innerPadding),
+            onDelete = { makeup -> selectedMakeup = makeup
+            showDeleteDialog = true
+            })
 
         if (showDialog) {
             ProfilDialog(
@@ -159,13 +167,20 @@ fun MainScreen() {
             }
         }
 
-        if (showMakeUpDialog) {
+        if (showMakeupDialog) {
             MakeupDialog(
                 bitmap = bitmap,
-                onDismissRequest = { showMakeUpDialog = false }) {judul, harga ->
+                onDismissRequest = { showMakeupDialog = false }) {judul, harga ->
                 viewModel.saveData(user.email, judul, harga, bitmap!!)
-                showMakeUpDialog = false
+                showMakeupDialog = false
             }
+        }
+
+        if (showDeleteDialog) {
+            DeleteDialog(onDismissRequest = { showDeleteDialog = false},
+                onConfirm = {selectedMakeup?.let { viewModel.deleteData(user.email, it.id) }
+                    showDeleteDialog = false
+                })
         }
 
         if ( errorMessage != null) {
@@ -176,7 +191,7 @@ fun MainScreen() {
 }
 
 @Composable
-fun ScreenContent(viewModel: MainViewModel, userId: String, modifier: Modifier = Modifier) {
+fun ScreenContent(viewModel: MainViewModel, userId: String, modifier: Modifier = Modifier, onDelete: (Makeup) -> Unit) {
     val data by viewModel.data
     val status by viewModel.status.collectAsState()
 
@@ -198,7 +213,11 @@ fun ScreenContent(viewModel: MainViewModel, userId: String, modifier: Modifier =
                 columns = GridCells.Fixed(2),
                 contentPadding = PaddingValues(bottom = 80.dp)
             ) {
-                items(data) { ListItem(makeUp = it)}
+                items(data) { makeup ->
+                    ListItem(makeup = makeup) {
+                        onDelete(makeup)
+                    }
+                }
             }
         }
         ApiStatus.FAILED -> {
@@ -222,50 +241,56 @@ fun ScreenContent(viewModel: MainViewModel, userId: String, modifier: Modifier =
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Composable
-fun ListItem(makeUp: MakeUp) {
+fun ListItem(makeup: Makeup, onDelete: () -> Unit) {
     Box(
         modifier = Modifier.padding(4.dp).border(1.dp, Color.Gray),
         contentAlignment = Alignment.BottomCenter
     ){
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(
-                    if (makeUp.judul == "Ayam")
-                        MakeupApi.getMakeUpUrl("not-found")
-                        else
-                        MakeupApi.getMakeUpUrl(makeUp.imageId)
-                )
+                .data(MakeupApi.getMakeupUrl(makeup.imageId))
                 .crossfade(true)
                 .build(),
-            contentDescription = stringResource(R.string.gambar, makeUp.judul),
+            contentDescription = stringResource(R.string.gambar, makeup.judul),
             contentScale = ContentScale.Crop,
             placeholder = painterResource(id = R.drawable.loading_img),
             error = painterResource(id = R.drawable.broken_img),
             modifier = Modifier.fillMaxWidth().padding(4.dp)
         )
         Column(
-            modifier = Modifier.fillMaxWidth().padding(4.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(4.dp)
                 .background(Color(red = 0f, green = 0f, blue = 0f, alpha = 0.5f))
+                .padding(4.dp)
         ) {
-            Text(
-                text = makeUp.judul,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
-            )
-            Text(
-                text = makeUp.harga,
-                fontStyle = FontStyle.Italic,
-                fontSize = 14.sp,
-                color = Color.White
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Column {
+                    Text(
+                        text = makeup.judul,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                    Text(
+                        text = makeup.harga,
+                        fontStyle = FontStyle.Italic,
+                        fontSize = 14.sp,
+                        color = Color.White
+                    )
+                }
+                if (makeup.mine == "1") {
+                    IconButton(onClick = { onDelete() }) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = stringResource(R.string.hapus),
+                            tint = Color.White
+                        )
+                    }
+                }
+            }
         }
     }
 }
@@ -332,7 +357,7 @@ private fun getCroppedImage(
     val uri = result.uriContent ?: return null
 
     return if(Build.VERSION.SDK_INT < Build.VERSION_CODES.P){
-        MediaStore.Images.Media.getBitmap(resolver.uri)
+        MediaStore.Images.Media.getBitmap(resolver, uri)
     }else{
         val source = ImageDecoder.createSource(resolver, uri)
         ImageDecoder.decodeBitmap(source)

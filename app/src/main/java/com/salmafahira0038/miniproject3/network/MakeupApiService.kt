@@ -1,6 +1,6 @@
 package com.salmafahira0038.miniproject3.network
 
-import com.salmafahira0038.miniproject3.model.MakeUp
+import com.salmafahira0038.miniproject3.model.Makeup
 import com.salmafahira0038.miniproject3.model.OpStatus
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -8,11 +8,13 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Query
 
 private const val BASE_URL = "https://store.sthresearch.site/"
 
@@ -29,15 +31,21 @@ interface MakeupApiService {
     @GET("makeup.php")
     suspend fun getMakeup(
         @Header("Authorization") userId: String
-    ): List<MakeUp>
+    ): List<Makeup>
 
     @Multipart
     @POST("makeup.php")
-    suspend fun postMakeUp(
+    suspend fun postMakeup(
         @Header("Authorization") userId: String,
         @Part("judul") judul: RequestBody,
         @Part("harga") harga: RequestBody,
         @Part imageId: MultipartBody.Part
+    ): OpStatus
+
+    @DELETE("makeup.php")
+    suspend fun deleteMakeup(
+        @Header("Authorization") userId: String,
+        @Query("id") makeupId: String
     ): OpStatus
 }
 
@@ -47,7 +55,7 @@ object MakeupApi{
         retrofit.create(MakeupApiService::class.java)
     }
 
-    fun getMakeUpUrl(imageId: String): String{
+    fun getMakeupUrl(imageId: String): String{
         return  "${BASE_URL}image.php?id=$imageId"
     }
 }

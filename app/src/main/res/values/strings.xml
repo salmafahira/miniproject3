@@ -10,5 +10,8 @@
     <string name="judul">Judul</string>
     <string name="harga">Harga</string>
     <string name="batal">Batal</string>
+    <string name="hapus">Hapus</string>
     <string name="simpan">Simpan</string>
+    <string name="pesan_hapus">apakah benar ingin menghapus?</string>
+    <string name="batal_hapus">Batal Hapus</string>
 </resources>

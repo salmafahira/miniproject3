@@ -1,6 +1,6 @@
 package com.salmafahira0038.miniproject3.model
 
-data class MakeUp(
+data class Makeup(
     val id: String,
     val judul: String,
     val deskripsi: String,
