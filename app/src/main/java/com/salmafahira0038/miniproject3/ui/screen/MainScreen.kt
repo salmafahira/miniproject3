@@ -90,12 +90,18 @@ fun ListItem(makeUp: MakeUp) {
     ){
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(MakeupApi.getMakeUpUrl(makeUp.imageId))
+                .data(
+                    if (makeUp.judul == "Ayam")
+                        MakeupApi.getMakeUpUrl("not-found")
+                        else
+                        MakeupApi.getMakeUpUrl(makeUp.imageId)
+                )
                 .crossfade(true)
                 .build(),
             contentDescription = stringResource(R.string.gambar, makeUp.judul),
             contentScale = ContentScale.Crop,
             placeholder = painterResource(id = R.drawable.loading_img),
+            error = painterResource(id = R.drawable.broken_img),
             modifier = Modifier.fillMaxWidth().padding(4.dp)
         )
         Column(
