@@ -39,9 +39,27 @@ interface MakeupApiService {
         @Header("Authorization") userId: String,
         @Part("judul") judul: RequestBody,
         @Part("harga") harga: RequestBody,
-        @Part imageId: MultipartBody.Part
+        @Part image: MultipartBody.Part,
     ): OpStatus
 
+    @Multipart
+    @POST("makeup.php")
+    suspend fun updateMakeup(
+        @Header("Authorization") userId: String,
+        @Part("id") id: RequestBody,
+        @Part("judul") judul: RequestBody,
+        @Part("harga") harga: RequestBody
+    ): OpStatus
+
+    @Multipart
+    @POST("makeup.php")
+    suspend fun updateImage(
+        @Header("Authorization") userId: String,
+        @Part("id") id: RequestBody,
+        @Part("judul") judul: RequestBody,
+        @Part("harga") harga: RequestBody,
+        @Part image: MultipartBody.Part,
+    ): OpStatus
     @DELETE("makeup.php")
     suspend fun deleteMakeup(
         @Header("Authorization") userId: String,

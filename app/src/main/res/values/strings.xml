@@ -14,4 +14,7 @@
     <string name="simpan">Simpan</string>
     <string name="pesan_hapus">apakah benar ingin menghapus?</string>
     <string name="batal_hapus">Batal Hapus</string>
+    <string name="edit_gambar">Edit Gambar</string>
+    <string name="edit">Edit</string>
+    <string name="data_kosong">Data produk belum tersedia, silahkan tambahkan</string>
 </resources>

@@ -63,6 +63,37 @@ class MainViewModel : ViewModel(){
         }
     }
 
+    fun updateData(userId: String, id: String, judul: String, harga: String, bitmap: Bitmap?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val result = if (bitmap != null) {
+                    MakeupApi.service.updateImage(
+                        userId,
+                        id.toRequestBody("text/plain".toMediaTypeOrNull()),
+                        judul.toRequestBody("text/plain".toMediaTypeOrNull()),
+                        harga.toRequestBody("text/plain".toMediaTypeOrNull()),
+                        bitmap.toMultipartBody()
+                    )
+                } else {
+                    MakeupApi.service.updateMakeup(
+                        userId,
+                        id.toRequestBody("text/plain".toMediaTypeOrNull()),
+                        judul.toRequestBody("text/plain".toMediaTypeOrNull()),
+                        harga.toRequestBody("text/plain".toMediaTypeOrNull()),
+                    )
+                }
+
+                if (result.status == "success") {
+                    retrieveData(userId)
+                } else {
+                    throw Exception(result.message)
+                }
+            } catch (e: Exception) {
+                errorMessage.value = "Error saat update: ${e.message}"
+            }
+        }
+    }
+
     fun deleteData(userId: String, idMakeup: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
