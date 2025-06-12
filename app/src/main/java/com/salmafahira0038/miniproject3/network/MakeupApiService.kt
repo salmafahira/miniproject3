@@ -1,6 +1,5 @@
 package com.salmafahira0038.miniproject3.network
 
-import android.media.Image
 import com.salmafahira0038.miniproject3.model.MakeUp
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -33,3 +32,5 @@ object MakeupApi{
         return  "$BASE_URL$imageId.jpg"
     }
 }
+
+enum class  ApiStatus { LOADING, SUCCESS }
