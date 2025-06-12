@@ -27,7 +27,9 @@ private val retrofit = Retrofit.Builder()
 
 interface MakeupApiService {
     @GET("makeup.php")
-    suspend fun getMakeup(): List<MakeUp>
+    suspend fun getMakeup(
+        @Header("Authorization") userId: String
+    ): List<MakeUp>
 
     @Multipart
     @POST("makeup.php")
