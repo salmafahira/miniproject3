@@ -39,7 +39,7 @@ fun EditDialog(
     onUpdate: (String, String, Bitmap?) -> Unit,
     onChangeImageClick: () -> Unit
 ) {
-    var judul by remember { mutableStateOf(makeup.judul) }
+    var produk by remember { mutableStateOf(makeup.produk) }
     var harga by remember { mutableStateOf(makeup.harga) }
 
     Dialog(onDismissRequest = { onDismissRequest() }) {
@@ -71,9 +71,9 @@ fun EditDialog(
                 }
 
                 OutlinedTextField(
-                    value = judul,
-                    onValueChange = { judul = it },
-                    label = { Text(stringResource(id = R.string.judul)) },
+                    value = produk,
+                    onValueChange = { produk = it },
+                    label = { Text(stringResource(id = R.string.produk)) },
                     maxLines = 1,
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.Words,
@@ -109,9 +109,9 @@ fun EditDialog(
                     }
                     OutlinedButton(
                         onClick = {
-                            onUpdate(judul, harga, bitmap)
+                            onUpdate(produk, harga, bitmap)
                         },
-                        enabled = judul.isNotEmpty() && harga.isNotEmpty(),
+                        enabled = produk.isNotEmpty() && harga.isNotEmpty(),
                         modifier = Modifier.padding(8.dp)
                     ) {
                         Text(stringResource(R.string.simpan))

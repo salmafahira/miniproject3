@@ -42,12 +42,12 @@ class MainViewModel : ViewModel(){
         }
     }
 
-    fun saveData(userId: String, judul: String, harga: String, bitmap: Bitmap){
+    fun saveData(userId: String, produk: String, harga: String, bitmap: Bitmap){
         viewModelScope.launch(Dispatchers.IO) {
             try{
                 val result = MakeupApi.service.postMakeup(
                     userId,
-                    judul.toRequestBody("text/plain".toMediaTypeOrNull()),
+                    produk.toRequestBody("text/plain".toMediaTypeOrNull()),
                     harga.toRequestBody("text/plain".toMediaTypeOrNull()),
                     bitmap.toMultipartBody()
                 )
@@ -63,14 +63,14 @@ class MainViewModel : ViewModel(){
         }
     }
 
-    fun updateData(userId: String, id: String, judul: String, harga: String, bitmap: Bitmap?) {
+    fun updateData(userId: String, id: String, produk: String, harga: String, bitmap: Bitmap?) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val result = if (bitmap != null) {
                     MakeupApi.service.updateImage(
                         userId,
                         id.toRequestBody("text/plain".toMediaTypeOrNull()),
-                        judul.toRequestBody("text/plain".toMediaTypeOrNull()),
+                        produk.toRequestBody("text/plain".toMediaTypeOrNull()),
                         harga.toRequestBody("text/plain".toMediaTypeOrNull()),
                         bitmap.toMultipartBody()
                     )
@@ -78,7 +78,7 @@ class MainViewModel : ViewModel(){
                     MakeupApi.service.updateMakeup(
                         userId,
                         id.toRequestBody("text/plain".toMediaTypeOrNull()),
-                        judul.toRequestBody("text/plain".toMediaTypeOrNull()),
+                        produk.toRequestBody("text/plain".toMediaTypeOrNull()),
                         harga.toRequestBody("text/plain".toMediaTypeOrNull()),
                     )
                 }

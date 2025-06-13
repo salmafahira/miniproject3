@@ -171,8 +171,8 @@ fun MainScreen() {
         if (showMakeupDialog) {
             MakeupDialog(
                 bitmap = bitmap,
-                onDismissRequest = { showMakeupDialog = false }) {judul, harga ->
-                viewModel.saveData(user.email, judul, harga, bitmap!!)
+                onDismissRequest = { showMakeupDialog = false }) {produk, harga ->
+                viewModel.saveData(user.email, produk, harga, bitmap!!)
                 showMakeupDialog = false
             }
         }
@@ -213,11 +213,11 @@ fun ScreenContent(viewModel: MainViewModel, userId: String, modifier: Modifier =
                 showEditDialog = false
                 editedBitmap = null
             },
-            onUpdate = { judul, harga, bitmap ->
+            onUpdate = { produk, harga, bitmap ->
                 viewModel.updateData(
                     userId,
                     selectedMakeup!!.id,
-                    judul,
+                    produk,
                     harga,
                     bitmap
                 )
@@ -309,7 +309,7 @@ fun ListItem(makeup: Makeup, onDelete: () -> Unit, onEdit: (Makeup) -> Unit) {
                 .data(MakeupApi.getMakeupUrl(makeup.imageId))
                 .crossfade(true)
                 .build(),
-            contentDescription = stringResource(R.string.gambar, makeup.judul),
+            contentDescription = stringResource(R.string.gambar, makeup.produk),
             contentScale = ContentScale.Crop,
             placeholder = painterResource(id = R.drawable.loading_img),
             error = painterResource(id = R.drawable.broken_img),
@@ -330,7 +330,7 @@ fun ListItem(makeup: Makeup, onDelete: () -> Unit, onEdit: (Makeup) -> Unit) {
             ) {
                 Column {
                     Text(
-                        text = makeup.judul,
+                        text = makeup.produk,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )

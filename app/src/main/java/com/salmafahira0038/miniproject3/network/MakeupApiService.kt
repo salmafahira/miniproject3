@@ -37,7 +37,7 @@ interface MakeupApiService {
     @POST("makeup.php")
     suspend fun postMakeup(
         @Header("Authorization") userId: String,
-        @Part("judul") judul: RequestBody,
+        @Part("produk") produk: RequestBody,
         @Part("harga") harga: RequestBody,
         @Part image: MultipartBody.Part,
     ): OpStatus
@@ -47,7 +47,7 @@ interface MakeupApiService {
     suspend fun updateMakeup(
         @Header("Authorization") userId: String,
         @Part("id") id: RequestBody,
-        @Part("judul") judul: RequestBody,
+        @Part("produk") produk: RequestBody,
         @Part("harga") harga: RequestBody
     ): OpStatus
 
@@ -56,7 +56,7 @@ interface MakeupApiService {
     suspend fun updateImage(
         @Header("Authorization") userId: String,
         @Part("id") id: RequestBody,
-        @Part("judul") judul: RequestBody,
+        @Part("produk") produk: RequestBody,
         @Part("harga") harga: RequestBody,
         @Part image: MultipartBody.Part,
     ): OpStatus

@@ -39,7 +39,7 @@ fun MakeupDialog(
     onDismissRequest: () -> Unit,
     onConfirmation: (String, String) -> Unit
 ) {
-    var judul by remember { mutableStateOf("") }
+    var produk by remember { mutableStateOf("") }
     var harga by remember { mutableStateOf("") }
 
     Dialog(onDismissRequest = { onDismissRequest() }) {
@@ -57,9 +57,9 @@ fun MakeupDialog(
                     modifier = Modifier.fillMaxWidth().aspectRatio(1f)
                 )
                 OutlinedTextField(
-                    value = judul,
-                    onValueChange = { judul = it},
-                    label = { Text(text = stringResource(id = R.string.judul)) },
+                    value = produk,
+                    onValueChange = { produk = it},
+                    label = { Text(text = stringResource(id = R.string.produk)) },
                     maxLines = 1,
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.Words,
@@ -90,8 +90,8 @@ fun MakeupDialog(
                         Text(text = stringResource(R.string.batal))
                     }
                     OutlinedButton(
-                        onClick = { onConfirmation(judul, harga)},
-                        enabled = judul.isNotEmpty() && harga.isNotEmpty(),
+                        onClick = { onConfirmation(produk, harga)},
+                        enabled = produk.isNotEmpty() && harga.isNotEmpty(),
                         modifier = Modifier.padding(8.dp)
                     ) {
                         Text(text = stringResource(R.string.simpan))
