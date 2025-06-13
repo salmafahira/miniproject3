@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Cosmetics</string>
+    <string name="app_name">BeautyPicks</string>
     <string name="gambar">Gambar %1$s</string>
     <string name="error">Gagal memuat data.. Koneksi Error</string>
     <string name="try_again">Coba lagi</string>
